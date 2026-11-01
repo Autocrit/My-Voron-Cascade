@@ -25,7 +25,7 @@
   "MaxSbcRetries": 3,
   "GpioChipDevice": "/dev/gpiochip0",
   "TransferReadyPin": 25,
-  "UsbDevice": "/dev/ttyACM1",
+  "UsbDevice": "/dev/serial/by-id/usb-Duet_3D_Duet-if02",
   "UsbReadTimeout": 2000,
   "UsbWriteTimeout": 2000,
   "CpuTemperaturePath": "/sys/class/thermal/thermal_zone0/temp",
