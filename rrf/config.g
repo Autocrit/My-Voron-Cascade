@@ -48,6 +48,7 @@ M575 P2 B9600 S7; P3=IO_1, B9600=baud, S7=device mode
 ; Create Spindle 0 using VFD output pin
 ; L0:24000 = RPM range, Q1000 = PWM frequency (not used by Modbus but required)
 M950 R0 C"vfd" L0:24000 Q1000
+M563 P0 R0 ; assign spindle 0 to tool 0
 
 ; Global variables for daemon.g VFD state tracking
 global vfdState = "stopped"
