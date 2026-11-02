@@ -2,7 +2,7 @@
 ; Uses internal while loop to avoid RRF daemon.g re-scheduling delay
 ; H100 registers: 512=run/stop (1=fwd, 0=stop), 513=frequency (0.1Hz units)
 ; H100 register 544 (0x0220) = output frequency (0.1Hz units, read-only)
-; Slave address 1 (F163=1), Serial channel P2 (IO1/RS485)
+; Slave address 1 (F163=1), Serial channel P3 (IO1/RS485 converter)
 
 ; Wait for spindle to be configured
 ; NOTE: in CNC mode (M453), bare ( ) are treated as comments, so exists() calls
@@ -34,21 +34,21 @@ while true
 	; Only send commands if state or frequency changed
 	if var.spindleState != global.vfdState || var.freqValue != global.vfdFreq
 		if var.spindleState == "forward"
-			M260.1 P2 A1 F6 R513 B{var.freqValue}
-			M260.1 P2 A1 F6 R512 B1
+			M260.1 P3 A1 F6 R513 B{var.freqValue}
+			M260.1 P3 A1 F6 R512 B1
 		elif var.spindleState == "reverse"
-			M260.1 P2 A1 F6 R513 B{var.freqValue}
-			M260.1 P2 A1 F6 R512 B2
+			M260.1 P3 A1 F6 R513 B{var.freqValue}
+			M260.1 P3 A1 F6 R512 B2
 		else
-			M260.1 P2 A1 F6 R512 B0
+			M260.1 P3 A1 F6 R512 B0
 		set global.vfdState = var.spindleState
 		set global.vfdFreq = var.freqValue
 
 	; Read actual output frequency from VFD every ~500ms (every 10 loops)
-	set var.loopCount = {var.loopCount + 1}
-	if var.loopCount >= 10
-		set var.loopCount = 0
-		M261.1 P2 A1 F4 R544 B1 V"vfdOutputFreq"
-		if {exists(var.vfdOutputFreq) && var.vfdOutputFreq != null}
+	;set var.loopCount = {var.loopCount + 1}
+	;if var.loopCount >= 10
+		;set var.loopCount = 0
+		;M261.1 P3 A1 F3 R544 B1 V"vfdOutputFreq"
+		;if {exists(var.vfdOutputFreq) && var.vfdOutputFreq != null}
 			; Convert 0.1Hz units back to RPM: RPM = freq * 6
-			set global.vfdActualRPM = {var.vfdOutputFreq[0] * 6}
+			;set global.vfdActualRPM = {var.vfdOutputFreq[0] * 6}
